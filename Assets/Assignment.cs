@@ -79,8 +79,9 @@ static public class AssignmentPart1
         StreamWriter sw = new StreamWriter(Application.dataPath + Path.DirectorySeparatorChar + "Party.txt");
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-            sw.WriteLine(PartyCharacterSaveDataSignifier + "," + pc.classID + "," + pc.health + ",", +pc.mana
-                     + "," + pc.strength + "," + pc.agility + "," + pc.wisdom);
+            Debug.Log("Writing Character Stats Here");
+            sw.WriteLine(PartyCharacterSaveDataSignifier + "," + pc.classID + "," + pc.health + "," +pc.mana 
+                     + "," + pc.strength + "," + pc.agility + "," + pc.wisdom); // 0 on .txt = new save 
             foreach (int equipID in pc.equipment)
             {
                 sw.WriteLine(EquipmentSaveDataSignifier + "," + equipID);
@@ -121,7 +122,7 @@ static public class AssignmentPart1
             }
 
             GameContent.RefreshUI();
-
+            
         }
 
     }

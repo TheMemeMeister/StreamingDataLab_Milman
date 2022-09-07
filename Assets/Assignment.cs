@@ -7,7 +7,7 @@ Pixel RPG characters created by Sean Browning.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.IO;
 
 #region Assignment Instructions
 
@@ -72,30 +72,61 @@ public partial class PartyCharacter
 
 static public class AssignmentPart1
 {
-
+    const int PartyCharacterSaveDataSignifier = 0;
+    const int EquipmentSaveDataSignifier = 1;
     static public void SavePartyButtonPressed()
     {
-       
+        StreamWriter sw = new StreamWriter(Application.dataPath + Path.DirectorySeparatorChar + "Party.txt");
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-           
+            sw.WriteLine(PartyCharacterSaveDataSignifier + "," + pc.classID + "," + pc.health + ",", +pc.mana
+                     + "," + pc.strength + "," + pc.agility + "," + pc.wisdom);
+            foreach (int equipID in pc.equipment)
+            {
+                sw.WriteLine(EquipmentSaveDataSignifier + "," + equipID);
+
+            }
         }
-       
+        
+
+
+        sw.Close();
         Debug.Log("Saved Pressed");
     }
 
     static public void LoadPartyButtonPressed()
     {
 
-        //GameContent.partyCharacters.Clear();
-       
-        GameContent.RefreshUI();
+        GameContent.partyCharacters.Clear();
+        StreamReader sr = new StreamReader(Application.dataPath + Path.DirectorySeparatorChar + "Party.txt");
+        string line;
+
+        while ((line = sr.ReadLine()) != null)
+
+        {
+
+            Debug.Log(line);
+            string[] csv = line.Split(','); //splitting the lines by the commans, hence csv
+            Debug.Log(csv[0]); //double checking csv
+            int saveDataSignifier = int.Parse(csv[0]); //First time using signifiers
+
+            if (saveDataSignifier == PartyCharacterSaveDataSignifier) //it is new character
+            {
+                PartyCharacter pc = new PartyCharacter(int.Parse(csv[1]), int.Parse(csv[2]), int.Parse(csv[3]), int.Parse(csv[4]), int.Parse(csv[5]), int.Parse(csv[6])); //changed parse to start at 1 
+                GameContent.partyCharacters.AddLast(pc);
+            }
+            else if (saveDataSignifier == EquipmentSaveDataSignifier)
+            {
+                GameContent.partyCharacters.Last.Value.equipment.AddLast(int.Parse(csv[1])); //Use 1 for equipment 
+            }
+
+            GameContent.RefreshUI();
+
+        }
 
     }
 
 }
-
-
 #endregion
 
 
